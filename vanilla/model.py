@@ -170,9 +170,9 @@ class Decoder(nn.Module):
         self.mlp = MLP(config)
         self.ln_3 = nn.LayerNorm(config.n_embd)
 
-    def forward(self, x):
+    def forward(self, x, y):
         x = x + self.attn(self.ln_1(x))
-        x = x + self.cross_attn(self.ln_2(x))
+        x = x + self.cross_attn(self.ln_2(x), y)
         x = x + self.mlp(self.ln_3(x))
         return x
     

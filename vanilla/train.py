@@ -16,7 +16,7 @@ num_epochs = 1000
 data_dir = Path("/home/Rohan/gujrati_male_mono1/mono")
 
 path = str(data_dir / "txt.done.data")
-wav_dir = str(data_dir / "wave")
+wav_dir = str(data_dir / "wav")
 
 # Verify paths exist
 if not Path(path).exists():

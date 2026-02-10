@@ -3,14 +3,31 @@ import shutil
 from pathlib import Path
 import math
 from dataclasses import dataclass
+import os
+from pathlib import Path
 
 from model import Sona
 from data_spliter import dataloader
 
 # parameters
 num_epochs = 1000
-path = r"../../gujrati_male_mono1/mono/txt.done.data"
-wav_dir = r"../../gujrati_male_mono1/mono/wave"
+# Find the actual location
+home = Path.home()  # /home/Rohan
+data_dir = home / "gujrati_male_mono1" / "mono"
+
+path = str(data_dir / "txt.done.data")
+wav_dir = str(data_dir / "wave")
+
+# Verify paths exist
+if not Path(path).exists():
+    raise FileNotFoundError(f"CSV file not found: {path}")
+if not Path(wav_dir).exists():
+    raise FileNotFoundError(f"WAV directory not found: {wav_dir}")
+
+print(f"Using CSV: {path}")
+print(f"Using WAV dir: {wav_dir}")
+# path = r"../../gujrati_male_mono1/mono/txt.done.data"
+# wav_dir = r"../../gujrati_male_mono1/mono/wave"
 
 @dataclass
 class Config:

@@ -36,10 +36,26 @@ class Data(Dataset):
       return len(self.file_list)
 
     def __getitem__(self, idx):
-       audio_path = self.file_list[idx]
-       transcript = self.transcript_list[idx]
-       waveform, sample_rate = torchaudio.load(audio_path)
-       return waveform, sample_rate, transcript
+      audio_path = self.file_list[idx]
+      transcript = self.transcript_list[idx]
+      from pathlib import Path
+      audio_path_obj = Path(audio_path)
+
+      if not audio_path_obj.exists():
+         print(f"File not found: {audio_path}")
+         print(f"Absolute path: {audio_path_obj.absolute()}")
+         print(f"Current working directory: {Path.cwd()}")
+
+         expected_dir = audio_path_obj.parent
+         if expected_dir.exists():
+            files = list(expected_dir.glob("*.wav"))[:5]
+            print(f"Found {len(files)} wav files in directory")
+            if files:
+               print(f"Example files: {files}")
+         raise FileNotFoundError(f"Audio file not found: {audio_path}")
+      
+      waveform, sample_rate = torchaudio.load(str(audio_path))
+      return waveform, sample_rate, transcript
    
 enc = tiktoken.get_encoding("cl100k_base")
 

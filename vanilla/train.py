@@ -12,8 +12,8 @@ from data_spliter import dataloader
 # parameters
 num_epochs = 1000
 # Find the actual location
-home = Path.home()  # /home/Rohan
-data_dir = home / "gujrati_male_mono1" / "mono"
+# home = Path.home()  # /home/Rohan
+data_dir = Path("/home/Rohan/gujrati_male_mono1/mono")
 
 path = str(data_dir / "txt.done.data")
 wav_dir = str(data_dir / "wave")

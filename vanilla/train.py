@@ -35,7 +35,7 @@ class Config:
     vocab_size: int = 100278
     n_layer: int = 12
     n_head: int = 12
-    n_embd: int = 768
+    n_embd: int = 256
     sample_rate: int = 48000
     out_channels: int = 768
     kernel_size: int = 251

@@ -145,17 +145,18 @@ class CausalCrossAttentionHead(nn.Module):
 
 
     def forward(self, embedding_q, embedding_kv):
-        B,T,C = embedding_q.shape
+        B_q, T_q, C = embedding_q.shape
+        B_kv, T_kv, _ = embedding_kv.shape
         k = self.key(embedding_kv)
         v = self.value(embedding_kv)
         q = self.query(embedding_q)
 
-        k = k.view(B, T, self.n_head, C // self.n_head).transpose(1,2)
-        q = q.view(B, T, self.n_head, C // self.n_head).transpose(1,2)
-        v = v.view(B, T, self.n_head, C // self.n_head).transpose(1,2)
+        q = q.view(B_q, T_q, self.n_head, C // self.n_head).transpose(1, 2)  # [B, n_head, T_q, head_dim]
+        k = k.view(B_kv, T_kv, self.n_head, C // self.n_head).transpose(1, 2)  # [B, n_head, T_kv, head_dim]
+        v = v.view(B_kv, T_kv, self.n_head, C // self.n_head).transpose(1, 2)  # [B, n_head, T_kv, head_dim]
 
         y = F.scaled_dot_product_attention(q, k, v, is_causal=False)
-        
+        y = y.transpose(1,2).contiguous().view(B_q, T_q, C)
         y = self.c_proj(y)
 
         return y

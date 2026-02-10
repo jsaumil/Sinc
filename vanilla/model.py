@@ -219,7 +219,7 @@ class Sona(nn.Module):
     def forward(self, audio, idx, targets=None):
         sinc = self.sinc(audio)
         sinc = self.pool(sinc)
-        cnn = self.conv1(cnn)
+        cnn = self.conv1(sinc)
         cnn = self.pool(cnn)
         cnn = self.conv2(cnn)
         cnn = self.act1(cnn)

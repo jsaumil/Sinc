@@ -2,15 +2,17 @@ import torch
 import shutil
 from pathlib import Path
 import math
+from dataclasses import dataclass
 
 from model import Sona
 from data_spliter import dataloader
 
 # parameters
 num_epochs = 1000
-path = ""
-wav_dir = ""
+path = r"../../gujrati_male_mono1/mono/txt.done.data"
+wav_dir = r"../../gujrati_male_mono1/mono/wave"
 
+@dataclass
 class Config:
     block_size: int = 1024
     vocab_size: int = 100278
@@ -18,9 +20,13 @@ class Config:
     n_head: int = 12
     n_embd: int = 768
     sample_rate: int = 48000
+    out_channels: int = 768
+    kernel_size: int = 251
+    stride: int = 1
+    padding: int = 0
 
 # data loading
-train, val = dataloader(path, wav_dir, 16)
+train, val = dataloader(path, wav_dir, 1)
 
 # parameter saving
 checkpoint_dir = Path("checkpoints")
@@ -53,7 +59,7 @@ elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
 print("using device:", device)
 
 # model defining
-model = Sona(Config(vocab_size=1))
+model = Sona(Config.sample_rate,Config(vocab_size=100278))
 
 model.to(device)
 

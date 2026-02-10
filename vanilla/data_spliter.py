@@ -46,9 +46,9 @@ enc = tiktoken.get_encoding("cl100k_base")
 def encode(text):
    return enc.encode(text, allowed_special="all")
 
-PAD_ID = enc.encode("<|endoftext|>")
-START_ID = enc.encode("<|endoftext|>")
-END_ID = enc.encode("<|endoftext|>")
+PAD_ID = enc.encode("<|endoftext|>", allowed_special="all")[0]
+START_ID = enc.encode("<|endoftext|>", allowed_special="all")
+END_ID = enc.encode("<|endoftext|>", allowed_special="all")
 
 def decode(ids):
    ids = [i for i in ids if i !=PAD_ID]

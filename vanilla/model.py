@@ -14,8 +14,8 @@ enc = tiktoken.get_encoding("cl100k_base")
 def encode(text):
    return enc.encode(text, allowed_special="all")
 
-im_start_id = enc.encode("<|endoftext|>")
-im_end_id = enc.encode("<|endoftext|>")
+im_start_id = enc.encode("<|endoftext|>", allowed_special="all")
+im_end_id = enc.encode("<|endoftext|>", allowed_special="all")
 
 class SinusoidalPositionEncoding(nn.Module):
     def __init__(self, embed_size):
@@ -87,7 +87,7 @@ class Encoder(nn.Module):
         super().__init__()
         self.ln_1 = nn.LayerNorm(config.n_embd)
         self.attn = EncoderCausalSelfAttention(config)
-        self.ln_2 = nn.Linear(config.n_embd)
+        self.ln_2 = nn.LayerNorm(config.n_embd)
         self.mlp = MLP(config)
 
     def forward(self, x):
@@ -109,7 +109,7 @@ class DecoderCausalSelfAttention(nn.Module):
         self.n_head = config.n_head
         self.n_embd = config.n_embd
         # not really a 'bias', more of a mask, but following the OpenAI/HF naming though
-        self.register_buffer("bias",torch.tril(torch.one(config.block_size, config.block_size)).view(1,1,config.block_size, config.block_size))
+        self.register_buffer("bias",torch.tril(torch.ones(config.block_size, config.block_size)).view(1,1,config.block_size, config.block_size))
 
     def forward(self, x):
         B, T, C = x. size()
@@ -181,6 +181,9 @@ class Sona(nn.Module):
     def __init__(self, sample_rate, config):
         super().__init__()
 
+        self.config = config
+        self.sample_rate = sample_rate
+
         self.act1 = nn.GELU()
         self.sinc = SincConv_fast(out_channels=4*config.out_channels, kernel_size=config.kernel_size, sample_rate=sample_rate, stride=config.stride, padding=config.padding)
         self.pool = nn.MaxPool1d(kernel_size=3, stride=3)
@@ -206,7 +209,7 @@ class Sona(nn.Module):
         if isinstance(module, nn.Linear):
             std = 0.02
             if hasattr(module, 'NANOGPT_SCALE_INIT'):
-                std *= (2 * self.config.n_layers) ** -0.5
+                std *= (2 * self.config.n_layer) ** -0.5
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
             if module.bias is not None:
                 torch.nn.init.zeros_(module.bias)

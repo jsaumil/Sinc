@@ -37,7 +37,7 @@ class Config:
     n_head: int = 12
     n_embd: int = 256
     sample_rate: int = 48000
-    out_channels: int = 768
+    out_channels: int = 256
     kernel_size: int = 251
     stride: int = 1
     padding: int = 0

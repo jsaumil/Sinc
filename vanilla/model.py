@@ -236,7 +236,7 @@ class Sona(nn.Module):
         assert T <= self.config.block_size, f"Cannot forward, model block size is exhausted: {T} > {self.block_size}"
 
         text_pos = torch.arange(0, T, dtype=torch.long, device=idx.device)
-        pos_embd = self.decoder.pos(text_pos)
+        pos_embd = self.decoder.d_pos(text_pos)
         tok_embd = self.decoder.d_wte(idx)
         dec_out = tok_embd + pos_embd
 

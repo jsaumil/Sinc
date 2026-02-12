@@ -34,7 +34,7 @@ class Config:
     block_size: int = 1024
     vocab_size: int = 100278
     n_layer: int = 12
-    n_head: int = 12
+    n_head: int = 8
     n_embd: int = 192
     sample_rate: int = 48000
     out_channels: int = 192

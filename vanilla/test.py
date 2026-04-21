@@ -1,5 +1,5 @@
 import torch
-from model import Sona
+from check import Sona
 from dataclasses import dataclass
 
 device="cpu"
